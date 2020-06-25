@@ -1,10 +1,19 @@
 const express = require("express")
-const studentsRoutes = require("./services/students")
-const cors = require("cors")
+const path = require("path")
+const studentRoutes = require("./services/students")
+const filesRoutes = require("./services/files")
+const {NotFoundHandler,unauthorizedHandler} = require("./errorHandling")
 const server = express()
-server.use(cors())
+
+
+const publicfilesFolderPath = path.join(__dirname,"../public")
+server.use(express.static(publicfilesFolderPath))
 server.use(express.json())
-server.use("/students" , studentsRoutes)
-server.listen(4000,() => 
-    console.log('Server is running perfectly')
-)
+
+
+server.use("/students" , studentRoutes)
+server.use("/files",filesRoutes)
+server.use(NotFoundHandler)
+server.listen(4000, () => {
+    console.log("Server is running ")
+})
